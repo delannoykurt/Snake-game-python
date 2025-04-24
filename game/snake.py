@@ -38,6 +38,16 @@ while running:
     new_head = [snake[0][0] + dx, snake[0][1] + dy]
     snake.insert(0, new_head)
 
+    # Si la tête sort de l'écran → Game Over
+    if (
+        new_head[0] < 0 or new_head[0] >= SCREEN_WIDTH // CELL_SIZE or
+        new_head[1] < 0 or new_head[1] >= SCREEN_HEIGHT // CELL_SIZE
+    ):
+        running = False
+    # Si la tête touche le corps (à partir du 2e segment)
+    if new_head in snake[1:]:
+        running = False
+
     # Vérifie si la tête touche la nourriture
     if snake[0] == food:
         # Ne pas retirer la queue → le serpent grandit
