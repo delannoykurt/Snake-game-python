@@ -1,34 +1,18 @@
 import sys # ici import pour avoir un contrôle sur notre environnement
 import pygame
-
+from game_engine import *
 # initialiasation de pygame
 pygame.init()
 
-# Constantes
-SCREEN_WIDTH = 600
-SCREEN_HEIGHT = 600
-CELL_SIZE = 20
-FPS = 10  # Images par seconde
-
-# Couleurs
-BLACK = (0, 0, 0)
-GREEN = (0, 255, 0)
-
-# Initialisation du serpent
-snake = [
-    [5, 5],
-    [4, 5],
-    [3, 5]
-]
-
-# Direction initiale (droite)
-dx, dy = 1, 0
 
 # créer la fenêtre
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Snake Game")
 clock = pygame.time.Clock()
 
+
+# initialisation nouriture
+food = random_food_position()
 
 # Boucle principale du jeu
 running = True
@@ -53,7 +37,13 @@ while running:
     # Déplacement du serpent (ajoute une nouvelle tête et enlève la queue)
     new_head = [snake[0][0] + dx, snake[0][1] + dy]
     snake.insert(0, new_head)
-    snake.pop()
+
+    # Vérifie si la tête touche la nourriture
+    if snake[0] == food:
+        # Ne pas retirer la queue → le serpent grandit
+        food = random_food_position()  # Nouvelle nourriture
+    else:
+        snake.pop()  # Supprime la queue si pas de nourriture
 
 
     # Remplir l'écran en noir
@@ -62,6 +52,9 @@ while running:
             rect = pygame.Rect(segment[0] * CELL_SIZE, segment[1] * CELL_SIZE, CELL_SIZE, CELL_SIZE)
             pygame.draw.rect(screen, GREEN, rect)
 
+    # Dessiner la nourriture
+    food_rect = pygame.Rect(food[0] * CELL_SIZE, food[1] * CELL_SIZE, CELL_SIZE, CELL_SIZE)
+    pygame.draw.rect(screen, (255, 0, 0), food_rect)
     # Mettre à jour l'affichage
     pygame.display.flip()
 
